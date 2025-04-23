@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>مكتبة الروايات</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>رفع رواية جديدة</h1>
+    <form id="upload-form">
+      <input type="text" id="title" placeholder="عنوان الرواية" required><br>
+      <textarea id="description" placeholder="وصف الرواية" required></textarea><br>
+      <input type="number" id="pages" placeholder="عدد الصفحات" required><br>
+      <input type="file" id="cover" accept="image/*" required><br>
+      <input type="file" id="pdf" accept="application/pdf" required><br>
+      <button type="submit">رفع الرواية</button>
+    </form>
+
+    <h2 style="margin-top: 40px;">الروايات المضافة</h2>
+    <div id="books-container"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
