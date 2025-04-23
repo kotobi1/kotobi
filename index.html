@@ -2,24 +2,22 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>مكتبة الروايات</title>
+  <title>إضافة رواية</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>رفع رواية جديدة</h1>
-    <form id="upload-form">
-      <input type="text" id="title" placeholder="عنوان الرواية" required><br>
-      <textarea id="description" placeholder="وصف الرواية" required></textarea><br>
-      <input type="number" id="pages" placeholder="عدد الصفحات" required><br>
-      <input type="file" id="cover" accept="image/*" required><br>
-      <input type="file" id="pdf" accept="application/pdf" required><br>
-      <button type="submit">رفع الرواية</button>
-    </form>
+  <h1>إضافة رواية جديدة</h1>
+  <form id="bookForm">
+    <input type="text" id="title" placeholder="عنوان الرواية" required>
+    <textarea id="description" placeholder="وصف الرواية" required></textarea>
+    <input type="number" id="pages" placeholder="عدد الصفحات" required>
+    <input type="url" id="pdfUrl" placeholder="رابط ملف PDF من GitHub" required>
+    <input type="file" id="cover" accept="image/*" required>
+    <button type="submit">حفظ</button>
+  </form>
 
-    <h2 style="margin-top: 40px;">الروايات المضافة</h2>
-    <div id="books-container"></div>
-  </div>
+  <h2>الروايات المضافة</h2>
+  <div id="bookList"></div>
 
   <script src="script.js"></script>
 </body>
