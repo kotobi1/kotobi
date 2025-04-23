@@ -3,69 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>قراءة الرواية</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body { margin: 0; background: black; }
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1 id="reader-title">قراءة الرواية</h1>
-    <canvas id="pdf-canvas"></canvas>
-    <div class="controls">
-      <button onclick="prevPage()">الصفحة السابقة</button>
-      <span id="page-info"></span>
-      <button onclick="nextPage()">الصفحة التالية</button>
-    </div>
-  </div>
+  <iframe id="pdfViewer" src=""></iframe>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
-    const title = params.get("title");
-    const pdfData = localStorage.getItem(`pdf-${title}`);
-    document.getElementById("reader-title").textContent = title;
-
-    let pdfDoc = null, pageNum = 1;
-    const canvas = document.getElementById('pdf-canvas');
-    const ctx = canvas.getContext('2d');
-    const pageInfo = document.getElementById('page-info');
-
-    const pdfBlob = base64ToBlob(pdfData, 'application/pdf');
-    const url = URL.createObjectURL(pdfBlob);
-
-    pdfjsLib.getDocument(url).promise.then(doc => {
-      pdfDoc = doc;
-      renderPage(pageNum);
-    });
-
-    function renderPage(num) {
-      pdfDoc.getPage(num).then(page => {
-        const viewport = page.getViewport({ scale: 1.5 });
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-        page.render({ canvasContext: ctx, viewport });
-        pageInfo.textContent = `الصفحة ${num} من ${pdfDoc.numPages}`;
-      });
-    }
-
-    function nextPage() {
-      if (pageNum < pdfDoc.numPages) {
-        pageNum++;
-        renderPage(pageNum);
-      }
-    }
-
-    function prevPage() {
-      if (pageNum > 1) {
-        pageNum--;
-        renderPage(pageNum);
-      }
-    }
-
-    function base64ToBlob(base64, type) {
-      const binary = atob(base64.split(',')[1]);
-      const array = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) array[i] = binary.charCodeAt(i);
-      return new Blob([array], { type });
-    }
+    const pdf = params.get("pdf");
+    document.getElementById("pdfViewer").src = pdf;
   </script>
 </body>
 </html>
