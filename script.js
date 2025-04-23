@@ -1,61 +1,63 @@
-const form = document.getElementById("upload-form");
-const booksContainer = document.getElementById("books-container");
+const API_KEY = "$2a$10$NFUSo8sG9ArSl9qM9yHKYOc2EC.8GaSPpsZnQzYTQXuVzkyAfDJgq";
+const BIN_ID = "68096ba58960c979a58bc0b3";
 
-form.addEventListener("submit", async e => {
+document.getElementById("bookForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const title = document.getElementById("title").value;
   const description = document.getElementById("description").value;
   const pages = document.getElementById("pages").value;
+  const pdfUrl = document.getElementById("pdfUrl").value;
   const coverFile = document.getElementById("cover").files[0];
-  const pdfFile = document.getElementById("pdf").files[0];
 
-  if (!coverFile || !pdfFile) return alert("الرجاء رفع صورة الغلاف وملف PDF.");
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const coverBase64 = reader.result;
 
-  const coverData = await toBase64(coverFile);
-  const pdfData = await toBase64(pdfFile);
+    const newBook = { title, description, pages, pdfUrl, cover: coverBase64 };
 
-  const book = { title, description, pages, cover: coverData };
-  localStorage.setItem(`book-${title}`, JSON.stringify(book));
-  localStorage.setItem(`pdf-${title}`, pdfData);
+    const existing = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': API_KEY }
+    }).then(res => res.json());
 
-  addBookCard(book);
-  form.reset();
+    const updatedBooks = [...existing.record, newBook];
+
+    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': API_KEY
+      },
+      body: JSON.stringify(updatedBooks)
+    });
+
+    alert("تم حفظ الرواية!");
+    window.location.reload();
+  };
+
+  reader.readAsDataURL(coverFile);
 });
 
-function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = e => reject(e);
-    reader.readAsDataURL(file);
+async function loadBooks() {
+  const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+    headers: { 'X-Master-Key': API_KEY }
   });
-}
+  const data = await res.json();
+  const books = data.record;
+  const list = document.getElementById("bookList");
 
-function loadBooks() {
-  for (let key in localStorage) {
-    if (key.startsWith("book-")) {
-      const book = JSON.parse(localStorage.getItem(key));
-      addBookCard(book);
-    }
-  }
-}
-
-function addBookCard(book) {
-  const card = document.createElement("div");
-  card.className = "book-card";
-  card.innerHTML = `
-    <img src="${book.cover}" alt="غلاف الرواية">
-    <h3>${book.title}</h3>
-    <p>${book.description}</p>
-    <p>عدد الصفحات: ${book.pages}</p>
-    <button onclick="readBook('${book.title}')">اقرأ الآن</button>
-  `;
-  booksContainer.appendChild(card);
-}
-
-function readBook(title) {
-  window.location.href = `reader.html?title=${encodeURIComponent(title)}`;
+  books.forEach(book => {
+    const card = document.createElement("div");
+    card.className = "book-card";
+    card.innerHTML = `
+      <img src="${book.cover}" alt="غلاف الرواية">
+      <h3>${book.title}</h3>
+      <p>${book.description}</p>
+      <p>الصفحات: ${book.pages}</p>
+      <a href="reader.html?pdf=${encodeURIComponent(book.pdfUrl)}" target="_blank">اقرأ الآن</a>
+    `;
+    list.appendChild(card);
+  });
 }
 
 loadBooks();
