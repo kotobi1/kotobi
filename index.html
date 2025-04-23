@@ -2,17 +2,17 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>إضافة رواية</title>
+  <title>إضافة رواية جديدة</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>إضافة رواية جديدة</h1>
-  <form id="bookForm">
+  <form id="bookForm" enctype="multipart/form-data">
     <input type="text" id="title" placeholder="عنوان الرواية" required>
     <textarea id="description" placeholder="وصف الرواية" required></textarea>
     <input type="number" id="pages" placeholder="عدد الصفحات" required>
-    <input type="url" id="pdfUrl" placeholder="رابط ملف PDF من GitHub" required>
-    <input type="file" id="cover" accept="image/*" required>
+    <input type="file" id="pdfFile" accept="application/pdf" required>
+    <input type="file" id="coverFile" accept="image/*" required>
     <button type="submit">حفظ</button>
   </form>
 
